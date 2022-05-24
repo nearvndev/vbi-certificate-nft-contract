@@ -1,9 +1,6 @@
 Non-fungible Token (NFT)
 ===================
 
-[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/near-examples/NFT)
-
-
 This repository includes an example implementation of a [non-fungible token] contract which uses [near-contract-standards] and [simulation] tests.
 
   [non-fungible token]: https://nomicon.io/Standards/NonFungibleToken/README.html
@@ -11,8 +8,6 @@ This repository includes an example implementation of a [non-fungible token] con
   [simulation]: https://github.com/near/near-sdk-rs/tree/master/near-sdk-sim
 Prerequisites
 =============
-If you're using Gitpod, you can skip this step.
-
   * Make sure Rust is installed per the prerequisites in [`near-sdk-rs`](https://github.com/near/near-sdk-rs).
   * Make sure [near-cli](https://github.com/near/near-cli) is installed.
 

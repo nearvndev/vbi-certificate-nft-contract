@@ -29,11 +29,18 @@ use near_sdk::{
 
 near_sdk::setup_alloc!();
 
+#[derive(BorshDeserialize, BorshSerialize)]
+pub struct ContractV1 {
+    tokens: NonFungibleToken,
+    metadata: LazyOption<NFTContractMetadata>,
+}
+
 #[near_bindgen]
 #[derive(BorshDeserialize, BorshSerialize, PanicOnDefault)]
 pub struct Contract {
     tokens: NonFungibleToken,
     metadata: LazyOption<NFTContractMetadata>,
+    next_id: u32
 }
 
 const DATA_IMAGE_SVG_GFS_ICON: &str = "data:image/svg+xml;base64,PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1lPSJMYXllciAxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNTIuMTcgMjUyLjE3Ij48ZGVmcz48c3R5bGU+LmNscy0xe2ZpbGw6I2ZjMzt9PC9zdHlsZT48L2RlZnM+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNNDk3Ljc4LDI5NC40OCwzNzQuNTcsNDE3LjY4YTIuODksMi44OSwwLDAsMCwwLDQuMDdsNzUuMTIsNzUuMTNhMi45LDIuOSwwLDAsMCw0LjA4LDBMNDc3LDQ3My42NmEyLjg3LDIuODcsMCwwLDAsMC00LjA3bC0yOS0yOUw0MjkuMiw0MjEuOGEyLjg3LDIuODcsMCwwLDEsMC00LjA3TDQ0OCwzOTlsNzcuMTYtNzcuMTZhMi44NywyLjg3LDAsMCwwLDAtNC4wN2wtMjMuMjYtMjMuMjZBMi44NywyLjg3LDAsMCwwLDQ5Ny43OCwyOTQuNDhaIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtMzczLjczIC0yOTMuNjMpIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNNDc0LjU2LDUyMS43NSw0OTcuNzgsNTQ1YTIuODcsMi44NywwLDAsMCw0LjA3LDBsMjMuMjItMjMuMjFhMi45LDIuOSwwLDAsMCwwLTQuMDhsLTIzLjIyLTIzLjIyYTIuODgsMi44OCwwLDAsMC00LjA3LDBsLTIzLjIyLDIzLjIxQTIuOSwyLjksMCwwLDAsNDc0LjU2LDUyMS43NVoiIHRyYW5zZm9ybT0idHJhbnNsYXRlKC0zNzMuNzMgLTI5My42MykiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik01MDEuODUsNDQ4LjgsNTQ5LjY4LDQwMWEyLjksMi45LDAsMCwxLDQuMDgsMGwxNi43MiwxNi43MmEyLjg5LDIuODksMCwwLDEsMCw0LjA3bC00Ny44NCw0Ny44NGEyLjg5LDIuODksMCwwLDAsMCw0LjA3bDIzLjIyLDIzLjIyYTIuODksMi44OSwwLDAsMCw0LjA3LDBsNzUuMTMtNzUuMTNhMi44OSwyLjg5LDAsMCwwLDAtNC4wN0w1NTAsMzQyLjZhMi45LDIuOSwwLDAsMC00LjA4LDBsLTc1LjEyLDc1LjEzYTIuODcsMi44NywwLDAsMCwwLDQuMDdsMjcsMjdBMi44OSwyLjg5LDAsMCwwLDUwMS44NSw0NDguOFoiIHRyYW5zZm9ybT0idHJhbnNsYXRlKC0zNzMuNzMgLTI5My42MykiLz48L3N2Zz4=";
@@ -80,6 +87,7 @@ impl Contract {
                 Some(StorageKey::Approval),
             ),
             metadata: LazyOption::new(StorageKey::Metadata, Some(&metadata)),
+            next_id: 0
         }
     }
 
@@ -94,11 +102,23 @@ impl Contract {
     #[payable]
     pub fn nft_mint(
         &mut self,
-        token_id: TokenId,
         receiver_id: ValidAccountId,
         token_metadata: TokenMetadata,
     ) -> Token {
-        self.tokens.mint(token_id, receiver_id, Some(token_metadata))
+        // Auto increment token id
+        self.next_id += 1;
+        self.tokens.mint(self.next_id.to_string(), receiver_id, Some(token_metadata))
+    }
+
+    #[private]
+    #[init(ignore_state)]
+    pub fn migrate() -> Self {
+        let old_ver: ContractV1 = env::state_read().expect("Can not read contract state");
+        Self { 
+            tokens: old_ver.tokens,
+            metadata: old_ver.metadata, 
+            next_id: 0
+        }
     }
 }
 

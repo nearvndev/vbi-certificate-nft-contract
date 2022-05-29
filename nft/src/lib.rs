@@ -198,8 +198,8 @@ mod tests {
             .predecessor_account_id(accounts(0))
             .build());
 
-        let token_id = "0".to_string();
-        let token = contract.nft_mint(token_id.clone(), accounts(0), sample_token_metadata());
+        let token_id = "1".to_string();
+        let token = contract.nft_mint(accounts(0), sample_token_metadata());
         assert_eq!(token.token_id, token_id);
         assert_eq!(token.owner_id, accounts(0).to_string());
         assert_eq!(token.metadata.unwrap(), sample_token_metadata());
@@ -217,8 +217,8 @@ mod tests {
             .attached_deposit(MINT_STORAGE_COST)
             .predecessor_account_id(accounts(0))
             .build());
-        let token_id = "0".to_string();
-        contract.nft_mint(token_id.clone(), accounts(0), sample_token_metadata());
+        let token_id = "1".to_string();
+        contract.nft_mint( accounts(0), sample_token_metadata());
 
         testing_env!(context
             .storage_usage(env::storage_usage())
@@ -254,8 +254,8 @@ mod tests {
             .attached_deposit(MINT_STORAGE_COST)
             .predecessor_account_id(accounts(0))
             .build());
-        let token_id = "0".to_string();
-        contract.nft_mint(token_id.clone(), accounts(0), sample_token_metadata());
+        let token_id = "1".to_string();
+        contract.nft_mint(accounts(0), sample_token_metadata());
 
         // alice approves bob
         testing_env!(context
@@ -285,8 +285,8 @@ mod tests {
             .attached_deposit(MINT_STORAGE_COST)
             .predecessor_account_id(accounts(0))
             .build());
-        let token_id = "0".to_string();
-        contract.nft_mint(token_id.clone(), accounts(0), sample_token_metadata());
+        let token_id = "1".to_string();
+        contract.nft_mint(accounts(0), sample_token_metadata());
 
         // alice approves bob
         testing_env!(context
@@ -323,8 +323,8 @@ mod tests {
             .attached_deposit(MINT_STORAGE_COST)
             .predecessor_account_id(accounts(0))
             .build());
-        let token_id = "0".to_string();
-        contract.nft_mint(token_id.clone(), accounts(0), sample_token_metadata());
+        let token_id = "1".to_string();
+        contract.nft_mint(accounts(0), sample_token_metadata());
 
         // alice approves bob
         testing_env!(context

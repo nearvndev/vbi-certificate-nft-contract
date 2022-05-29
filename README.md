@@ -118,7 +118,12 @@ We'll be able to view our metadata right after:
 
 Then, let's mint our first token. This will create a NFT based on Olympus Mons where only one copy exists:
 
-    near call $ID nft_mint '{"token_id": "0", "receiver_id": "'$ID'", "token_metadata": { "title": "Olympus Mons", "description": "Tallest mountain in charted solar system", "media": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/Olympus_Mons_alt.jpg/1024px-Olympus_Mons_alt.jpg", "copies": 1}}' --accountId $ID --deposit 0.1
+    near call $ID nft_mint '{"receiver_id": "'$ID'", "token_metadata": { "title": "VBI GFS Near Developer Advanced Course Certificate", "media": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/Olympus_Mons_alt.jpg/1024px-Olympus_Mons_alt.jpg", "copies": 1}}' --accountId $ID --deposit 0.1
+
+And you can mint NFT with IPFS upload with INFURA [`ipfs-upload-client`](https://github.com/INFURA/ipfs-upload-client)
+
+    ipfs-upload-client --id $INFURA_PROJECT_ID --secret $INFURA_PROJECT_SECRET /path/file/image.jpg | xargs -I{} near call $ID nft_mint '{"receiver_id": "'$ID'", "token_metadata": {"title":"VBI GFS Near Developer Advanced Course Certificate", "media": "https://ipfs.infura.io{}", "copies": 1}}' --accountId $ID --deposit 0.01
+
 
 Transferring our NFT
 ====================
